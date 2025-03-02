@@ -1,5 +1,6 @@
 package com.asterixcode.bankapi.core.security;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+@Profile("!local")
 @Component
 public class BankUsernamePasswordAuthenticationProvider implements AuthenticationProvider {
 
