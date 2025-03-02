@@ -1,5 +1,6 @@
 package com.asterixcode.bankapi.core.security;
 
+import com.asterixcode.bankapi.core.exception.CustomHttpBasicAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -32,7 +33,8 @@ public class SecurityConfiguration {
                     .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**")
                     .permitAll());
     http.formLogin(Customizer.withDefaults());
-    http.httpBasic(Customizer.withDefaults());
+    http.httpBasic(
+        hbc -> hbc.authenticationEntryPoint(new CustomHttpBasicAuthenticationEntryPoint()));
     return http.build();
   }
 
