@@ -33,11 +33,6 @@ public class SecurityConfiguration {
     return http.build();
   }
 
-  //  @Bean
-  //  UserDetailsService userDetailsService(DataSource dataSource) {
-  //    return new JdbcUserDetailsManager(dataSource);
-  //  }
-
   @Bean
   public PasswordEncoder passwordEncoder() {
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
