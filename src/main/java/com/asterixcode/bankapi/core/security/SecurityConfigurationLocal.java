@@ -21,7 +21,10 @@ public class SecurityConfigurationLocal {
   @Bean
   SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
     http.sessionManagement(
-            smc -> smc.invalidSessionUrl("/invalidSession"))
+            smc ->
+                smc.invalidSessionUrl("/invalidSession")
+                    .maximumSessions(3)
+                    .maxSessionsPreventsLogin(true))
         .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure()) // Only HTTP traffic allowed
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
