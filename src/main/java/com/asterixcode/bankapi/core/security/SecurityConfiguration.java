@@ -20,7 +20,8 @@ public class SecurityConfiguration {
 
   @Bean
   SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-    http.requiresChannel(rcc -> rcc.anyRequest().requiresSecure()) // Only HTTPS traffic allowed
+    http.sessionManagement(smc -> smc.invalidSessionUrl("invalidSession"))
+        .requiresChannel(rcc -> rcc.anyRequest().requiresSecure()) // Only HTTPS traffic allowed
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
             requests ->

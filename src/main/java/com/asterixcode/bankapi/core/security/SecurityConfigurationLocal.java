@@ -20,14 +20,16 @@ public class SecurityConfigurationLocal {
 
   @Bean
   SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-    http.requiresChannel(rcc -> rcc.anyRequest().requiresInsecure()) // Only HTTP traffic allowed
+    http.sessionManagement(
+            smc -> smc.invalidSessionUrl("/invalidSession"))
+        .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure()) // Only HTTP traffic allowed
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
             requests ->
                 requests
                     .requestMatchers("/account", "/balance", "/loans", "/cards")
                     .authenticated()
-                    .requestMatchers("/contact", "/notices", "/error")
+                    .requestMatchers("/contact", "/notices", "/error", "/invalidSession")
                     .permitAll()
                     .requestMatchers("/api/v1/customers/register")
                     .permitAll()
