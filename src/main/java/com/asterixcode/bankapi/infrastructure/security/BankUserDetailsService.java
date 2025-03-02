@@ -1,4 +1,4 @@
-package com.asterixcode.bankapi.core.security;
+package com.asterixcode.bankapi.infrastructure.security;
 
 import com.asterixcode.bankapi.domain.model.Customer;
 import com.asterixcode.bankapi.domain.repository.CustomerRepository;

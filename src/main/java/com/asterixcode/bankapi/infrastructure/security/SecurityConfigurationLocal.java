@@ -1,7 +1,7 @@
-package com.asterixcode.bankapi.core.security;
+package com.asterixcode.bankapi.infrastructure.security;
 
-import com.asterixcode.bankapi.core.exception.CustomAccessDeniedHandler;
-import com.asterixcode.bankapi.core.exception.CustomHttpBasicAuthenticationEntryPoint;
+import com.asterixcode.bankapi.infrastructure.exception.CustomAccessDeniedHandler;
+import com.asterixcode.bankapi.infrastructure.exception.CustomHttpBasicAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;

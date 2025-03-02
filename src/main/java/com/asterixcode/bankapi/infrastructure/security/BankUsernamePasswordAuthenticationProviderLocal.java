@@ -1,4 +1,4 @@
-package com.asterixcode.bankapi.core.security;
+package com.asterixcode.bankapi.infrastructure.security;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationProvider;

@@ -1,4 +1,4 @@
-package com.asterixcode.bankapi.core.exception;
+package com.asterixcode.bankapi.infrastructure.exception;
 
 import static java.time.LocalDateTime.now;
 import static org.springframework.http.HttpStatus.*;

@@ -1,4 +1,4 @@
-package com.asterixcode.bankapi.core.exception;
+package com.asterixcode.bankapi.infrastructure.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

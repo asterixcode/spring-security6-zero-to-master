@@ -1,4 +1,4 @@
-package com.asterixcode.bankapi.core.springdoc;
+package com.asterixcode.bankapi.infrastructure.springdoc;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
