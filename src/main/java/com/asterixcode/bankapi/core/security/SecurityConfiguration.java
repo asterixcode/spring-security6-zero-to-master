@@ -18,7 +18,8 @@ public class SecurityConfiguration {
 
   @Bean
   SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-    http.csrf(AbstractHttpConfigurer::disable)
+    http.requiresChannel(rcc -> rcc.anyRequest().requiresSecure()) // Only HTTPS traffic allowed
+        .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
             requests ->
                 requests
