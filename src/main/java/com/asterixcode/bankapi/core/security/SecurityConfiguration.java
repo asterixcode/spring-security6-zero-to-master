@@ -1,5 +1,6 @@
 package com.asterixcode.bankapi.core.security;
 
+import com.asterixcode.bankapi.core.exception.CustomAccessDeniedHandler;
 import com.asterixcode.bankapi.core.exception.CustomHttpBasicAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,6 +36,10 @@ public class SecurityConfiguration {
     http.formLogin(Customizer.withDefaults());
     http.httpBasic(
         hbc -> hbc.authenticationEntryPoint(new CustomHttpBasicAuthenticationEntryPoint()));
+    http.exceptionHandling( // exceptionHandling() handles exceptions globally
+        ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler())
+        // .accessDeniedPage("/denied") // Redirect to a custom page: use only with Spring MVC apps
+        );
     return http.build();
   }
 
