@@ -11,3 +11,15 @@ Parts of this project are based on the Udemy course [Spring Security Zero to Mas
 
 Course repository:
 https://github.com/eazybytes/spring-security
+
+## Topics
+
+- [x] Spring Security Architecture, Configuration, Filters
+- [x] SecurityFilterChain
+- [x] Encode/Decode, Encrypt/Decrypt, Hashing
+- [x] Password Encoders
+- [x] CompromisedPasswordChecker: Have I Been Pwned
+- [x] Custom UserDetailsService
+- [x] Custom AuthenticationProvider
+- [x] Custom HTTP Basic Authentication Entry Point for 401 Unauthorized between microservices
+- [x] Custom AccessDeniedHandler for 403 Forbidden
