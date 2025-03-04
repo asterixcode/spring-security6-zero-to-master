@@ -45,6 +45,13 @@ public class SecurityConfiguration {
         ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler())
         // .accessDeniedPage("/denied") // Redirect to a custom page: use only with Spring MVC apps
         );
+    http.logout(
+        logout ->
+            logout
+                .logoutSuccessUrl("/login?logout=true")
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
+                .deleteCookies("JSESSIONID"));
     return http.build();
   }
 
