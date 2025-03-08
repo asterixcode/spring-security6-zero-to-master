@@ -15,6 +15,10 @@ import org.mapstruct.Mapping;
     nullValuePropertyMappingStrategy = IGNORE,
     nullValueCheckStrategy = ALWAYS)
 public interface CustomerDisassembler {
+
+  @Mapping(target = "customerId", ignore = true)
+  @Mapping(target = "createdAt", expression = "java(java.time.Instant.now())")
   @Mapping(target = "id", ignore = true)
   Customer toDomainObject(RegisterCustomerRequest customer);
+
 }

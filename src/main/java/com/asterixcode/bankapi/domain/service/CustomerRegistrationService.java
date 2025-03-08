@@ -32,4 +32,8 @@ public class CustomerRegistrationService {
 
     return repository.save(customer);
   }
+
+  public Customer getCustomerByEmail(String email) {
+    return repository.findByEmail(email).orElse(null);
+  }
 }

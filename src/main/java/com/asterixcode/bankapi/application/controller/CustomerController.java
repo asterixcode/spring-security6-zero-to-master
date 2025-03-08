@@ -9,7 +9,9 @@ import com.asterixcode.bankapi.domain.service.CustomerRegistrationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,5 +32,10 @@ public class CustomerController implements CustomerOpenApi {
   public CustomerModel register(@RequestBody @Valid RegisterCustomerRequest request) {
     Customer customer = service.register(disassembler.toDomainObject(request));
     return new CustomerModel(customer);
+  }
+
+  @RequestMapping("/user")
+  public Customer getUserDetailsAfterLogin(Authentication authentication) {
+    return service.getCustomerByEmail(authentication.getName());
   }
 }

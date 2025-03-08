@@ -30,9 +30,9 @@ public class SecurityConfiguration {
         .authorizeHttpRequests(
             requests ->
                 requests
-                    .requestMatchers("/account", "/balance", "/loans", "/cards")
+                    .requestMatchers("/myAccount", "/myBalance", "/myLoans", "/myCards", "/user")
                     .authenticated()
-                    .requestMatchers("/contact", "/notices", "/error")
+                    .requestMatchers("/contact", "/notices", "/error", "/invalidSession")
                     .permitAll()
                     .requestMatchers("/api/v1/customers/register")
                     .permitAll()

@@ -30,7 +30,7 @@ public class SecurityConfigurationLocal {
         .authorizeHttpRequests(
             requests ->
                 requests
-                    .requestMatchers("/account", "/balance", "/loans", "/cards")
+                    .requestMatchers("/myAccount", "/myBalance", "/myLoans", "/myCards", "/user")
                     .authenticated()
                     .requestMatchers("/contact", "/notices", "/error", "/invalidSession")
                     .permitAll()
