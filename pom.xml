@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.asterixcode</groupId>
-    <artifactId>bank-api</artifactId>
+    <artifactId>bank-app</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>bank-api</name>
-    <description>Bank API</description>
+    <name>bank-app</name>
+    <description>Bank Application</description>
     <url/>
     <licenses>
         <license/>
