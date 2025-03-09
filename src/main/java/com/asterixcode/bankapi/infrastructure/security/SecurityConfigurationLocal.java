@@ -9,12 +9,14 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 
 @Profile("local")
@@ -23,7 +25,12 @@ public class SecurityConfigurationLocal {
 
   @Bean
   SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-    http.cors(
+    CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler =
+        new CsrfTokenRequestAttributeHandler();
+
+    http
+        // CORS
+        .cors(
             corsConfig ->
                 corsConfig.configurationSource(
                     request -> {
@@ -35,16 +42,38 @@ public class SecurityConfigurationLocal {
                       config.setMaxAge(3600L);
                       return config;
                     }))
-//        .sessionManagement(
-//            smc ->
-//                smc.invalidSessionUrl("/invalidSession")
-//                    .maximumSessions(3)
-//                    .maxSessionsPreventsLogin(true))
-        .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure()) // Only HTTP traffic allowed
+        //        .sessionManagement(
+        //            smc ->
+        //                smc.invalidSessionUrl("/invalidSession")
+        //                    .maximumSessions(3)
+        //                    .maxSessionsPreventsLogin(true))
+        // commented out in favor of configuring the csrf() method as not /invalidSession page is
+        // configured.
+        // End CORS
+        // Start CSRF config
         .csrf(
             csrfConfig ->
-                csrfConfig.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                csrfConfig
+                    .csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
+                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
         .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+        .sessionManagement(
+            sessionConfig ->
+                sessionConfig.sessionCreationPolicy(
+                    SessionCreationPolicy
+                        .ALWAYS // Tells Spring Security to create a session if one doesn't exist.
+                    // The JSESSIONID is created but not saved in the SecurityContextHolder, so it
+                    // requires manual handling.
+                    // This is done by invoking the .securityContext()
+                    ))
+        .securityContext(
+            contextConfig ->
+                contextConfig.requireExplicitSave(
+                    false)) // This tells the Spring Security that the app is not storing any
+        // JSESSIONID or the logged in user in the SecurityContextHolder.
+        // Instead, it tells Spring Security to create a session if one doesn't exist.
+        // End CSRF config
+        .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure()) // Only HTTP traffic allowed
         .authorizeHttpRequests(
             requests ->
                 requests
