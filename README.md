@@ -36,9 +36,10 @@ https://github.com/eazybytes/spring-security
   - `.requiresChannel(rcc -> rcc.anyRequest().requiresSecure())`
 - [x] HTTP allowed traffic only
   - `.requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())`
-- [x] CSRF Protection: Cross Site Request Forgery
 - [x] CORS: Cross Origin Resource Sharing:
   - allowedOrigins, allowedMethods, allowedHeaders, exposedHeaders, allowCredentials, maxAge
+- [x] CSRF Protection: Cross Site Request Forgery
+- 
 
 
 ## Getting Started
