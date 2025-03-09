@@ -2,7 +2,6 @@ package com.asterixcode.bankapi.infrastructure.security;
 
 import com.asterixcode.bankapi.infrastructure.exception.CustomAccessDeniedHandler;
 import com.asterixcode.bankapi.infrastructure.exception.CustomHttpBasicAuthenticationEntryPoint;
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 
 @Profile("!local")
 @Configuration
@@ -29,8 +27,7 @@ public class SecurityConfiguration {
                 corsConfig.configurationSource(
                     request -> {
                       CorsConfiguration config = new CorsConfiguration();
-                      config.setAllowedOrigins(
-                          Collections.singletonList("http://localhost:4200"));
+                      config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
                       config.setAllowedMethods(Collections.singletonList("*"));
                       config.setAllowedHeaders(Collections.singletonList("*"));
                       config.setAllowCredentials(true);
