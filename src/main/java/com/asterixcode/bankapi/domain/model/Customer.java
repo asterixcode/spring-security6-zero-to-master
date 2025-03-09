@@ -1,5 +1,6 @@
 package com.asterixcode.bankapi.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.time.Instant;
@@ -42,6 +43,7 @@ public class Customer {
   @Column(name = "role")
   private String role;
 
+  @JsonIgnore
   @Column(name = "created_at")
   private Instant createdAt;
 
