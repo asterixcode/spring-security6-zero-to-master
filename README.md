@@ -40,3 +40,10 @@ https://github.com/eazybytes/spring-security
 - [x] CORS: Cross Origin Resource Sharing:
   - allowedOrigins, allowedMethods, allowedHeaders, exposedHeaders, allowCredentials, maxAge
 
+
+## Getting Started
+
+The following user is available for testing:
+
+- email: admin@mail.com
+- password: pass@user@4321
