@@ -1,5 +1,6 @@
 package com.asterixcode.bankapi.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,9 +38,11 @@ public class Notice {
   @Column(name = "notice_end_date")
   private LocalDate noticeEndDate;
 
+  @JsonIgnore
   @Column(name = "created_at")
   private LocalDateTime createdAt;
 
+  @JsonIgnore
   @Column(name = "updated_at")
   private LocalDateTime updatedAt;
 }
