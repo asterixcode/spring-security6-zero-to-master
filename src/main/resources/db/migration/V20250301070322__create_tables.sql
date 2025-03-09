@@ -1,7 +1,7 @@
 CREATE SEQUENCE IF NOT EXISTS customers_id_seq START 1 INCREMENT 1;
 CREATE TABLE IF NOT EXISTS customers
 (
-    customer_id   BIGINT       NOT NULL DEFAULT nextval(customers_id_seq),
+    customer_id   BIGINT       NOT NULL DEFAULT nextval('customers_id_seq'),
     name          VARCHAR(50)  NOT NULL,
     email         VARCHAR(45)  NOT NULL,
     mobile_number VARCHAR(20)  NOT NULL,
@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS accounts
     CONSTRAINT accounts_customer_id_fk FOREIGN KEY (customer_id) REFERENCES customers (customer_id) ON DELETE CASCADE
 );
 
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS account_transactions
 (
     transaction_id      UUID         NOT NULL DEFAULT uuid_generate_v4(),
@@ -42,7 +43,7 @@ CREATE TABLE IF NOT EXISTS account_transactions
 CREATE SEQUENCE IF NOT EXISTS loans_id_seq START 1 INCREMENT 1;
 CREATE TABLE IF NOT EXISTS loans
 (
-    loan_number        BIGINT       NOT NULL DEFAULT nextval(loans_id_seq),
+    loan_number        BIGINT       NOT NULL DEFAULT nextval('loans_id_seq'),
     customer_id        BIGINT       NOT NULL,
     start_date         DATE         NOT NULL,
     loan_type          VARCHAR(100) NOT NULL,
@@ -57,7 +58,7 @@ CREATE TABLE IF NOT EXISTS loans
 CREATE SEQUENCE IF NOT EXISTS cards_id_seq START 1 INCREMENT 1;
 CREATE TABLE IF NOT EXISTS cards
 (
-    card_id          BIGINT       NOT NULL DEFAULT nextval(cards_id_seq),
+    card_id          BIGINT       NOT NULL DEFAULT nextval('cards_id_seq'),
     card_number      VARCHAR(100) NOT NULL,
     customer_id      BIGINT       NOT NULL,
     card_type        VARCHAR(100) NOT NULL,
@@ -72,7 +73,7 @@ CREATE TABLE IF NOT EXISTS cards
 CREATE SEQUENCE IF NOT EXISTS notice_details_id_seq START 1 INCREMENT 1;
 CREATE TABLE notice_details
 (
-    notice_id       BIGINT       NOT NULL DEFAULT nextval(notice_details_id_seq),
+    notice_id       BIGINT       NOT NULL DEFAULT nextval('notice_details_id_seq'),
     notice_summary  VARCHAR(200) NOT NULL,
     notice_details  VARCHAR(500) NOT NULL,
     notice_beg_date DATE         NOT NULL,
