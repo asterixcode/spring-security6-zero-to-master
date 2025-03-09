@@ -9,11 +9,12 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 
 @Profile("local")
@@ -34,13 +35,16 @@ public class SecurityConfigurationLocal {
                       config.setMaxAge(3600L);
                       return config;
                     }))
-        .sessionManagement(
-            smc ->
-                smc.invalidSessionUrl("/invalidSession")
-                    .maximumSessions(3)
-                    .maxSessionsPreventsLogin(true))
+//        .sessionManagement(
+//            smc ->
+//                smc.invalidSessionUrl("/invalidSession")
+//                    .maximumSessions(3)
+//                    .maxSessionsPreventsLogin(true))
         .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure()) // Only HTTP traffic allowed
-        .csrf(AbstractHttpConfigurer::disable)
+        .csrf(
+            csrfConfig ->
+                csrfConfig.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+        .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
         .authorizeHttpRequests(
             requests ->
                 requests
