@@ -40,6 +40,7 @@ public class SecurityConfiguration {
                       config.setMaxAge(3600L);
                       return config;
                     }))
+        //        .csrf(AbstractHttpConfigurer::disable)
         //        .sessionManagement(
         //            smc ->
         //                smc.invalidSessionUrl("invalidSession")
@@ -49,6 +50,7 @@ public class SecurityConfiguration {
             csrfConfig ->
                 csrfConfig
                     .csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
+                    .ignoringRequestMatchers("/contact", "/register")
                     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
         .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
         .sessionManagement(
