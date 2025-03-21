@@ -57,10 +57,31 @@ public class SecurityConfiguration {
             sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
         .securityContext(contextConfig -> contextConfig.requireExplicitSave(false))
         .requiresChannel(rcc -> rcc.anyRequest().requiresSecure()) // Only HTTPS traffic allowed
+        //        .authorizeHttpRequests(
+        //            requests ->
+        //                requests
+        //                    .requestMatchers("/myAccount", "/myBalance", "/myLoans", "/myCards",
+        // "/user")
+        //                    .authenticated()
+        //                    .requestMatchers("/contact", "/notices", "/error", "/invalidSession")
+        //                    .permitAll()
+        //                    .requestMatchers("/api/v1/customers/register")
+        //                    .permitAll()
+        //                    .requestMatchers("/swagger-ui.html", "/swagger-ui/**",
+        // "/v3/api-docs/**")
+        //                    .permitAll());
         .authorizeHttpRequests(
             requests ->
                 requests
-                    .requestMatchers("/myAccount", "/myBalance", "/myLoans", "/myCards", "/user")
+                    .requestMatchers("/myAccount")
+                    .hasAuthority("VIEW_ACCOUNT")
+                    .requestMatchers("/myBalance")
+                    .hasAnyAuthority("VIEW_BALANCE", "VIEW_ACCOUNT")
+                    .requestMatchers("/myLoans")
+                    .hasAuthority("VIEW_LOANS")
+                    .requestMatchers("/myCards")
+                    .hasAuthority("VIEW_CARDS")
+                    .requestMatchers("/user")
                     .authenticated()
                     .requestMatchers("/contact", "/notices", "/error", "/invalidSession")
                     .permitAll()
