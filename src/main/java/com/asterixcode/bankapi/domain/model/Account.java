@@ -1,5 +1,6 @@
 package com.asterixcode.bankapi.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.Instant;
 import lombok.Getter;
@@ -40,6 +41,7 @@ public class Account {
     return accountNumber.hashCode();
   }
 
+  @JsonIgnore
   public boolean isNew() {
     return accountNumber == null;
   }
