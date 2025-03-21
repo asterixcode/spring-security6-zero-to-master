@@ -3,7 +3,6 @@ package com.asterixcode.bankapi.infrastructure.security;
 import com.asterixcode.bankapi.domain.model.Customer;
 import com.asterixcode.bankapi.domain.repository.CustomerRepository;
 import java.util.List;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,7 +26,10 @@ public class BankUserDetailsService implements UserDetailsService {
             .findByEmail(username)
             .orElseThrow(
                 () -> new UsernameNotFoundException("User details not found for user " + username));
-    List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(customer.getRole()));
+    List<SimpleGrantedAuthority> authorities =
+        customer.getAuthorities().stream()
+            .map(authority -> new SimpleGrantedAuthority(authority.getName()))
+            .toList();
     return new User(customer.getEmail(), customer.getPassword(), authorities);
   }
 }

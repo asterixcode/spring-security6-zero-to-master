@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -47,6 +48,10 @@ public class Customer {
   @Column(name = "created_at")
   private Instant createdAt;
 
+  @JsonIgnore
+  @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+  private Set<Authority> authorities;
+
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof Customer customer)) return false;
@@ -58,6 +63,7 @@ public class Customer {
     return Objects.hashCode(getEmail());
   }
 
+  @JsonIgnore
   public boolean isNew() {
     return getCustomerId() == null;
   }
