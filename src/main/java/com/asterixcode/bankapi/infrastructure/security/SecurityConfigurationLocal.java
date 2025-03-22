@@ -76,32 +76,30 @@ public class SecurityConfigurationLocal {
         // Instead, it tells Spring Security to create a session if one doesn't exist.
         // End CSRF config
         .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure()) // Only HTTP traffic allowed
-        // authorization without using authorities, just if authenticated
-        //        .authorizeHttpRequests(
-        //            requests ->
-        //                requests
-        //                    .requestMatchers("/myAccount", "/myBalance", "/myLoans", "/myCards",
-        // "/user")
-        //                    .authenticated()
-        //                    .requestMatchers("/contact", "/notices", "/error", "/invalidSession")
-        //                    .permitAll()
-        //                    .requestMatchers("/api/v1/customers/register")
-        //                    .permitAll()
-        //                    .requestMatchers("/swagger-ui.html", "/swagger-ui/**",
-        // "/v3/api-docs/**")
-        //                    .permitAll());
-        // authorization using authorities
         .authorizeHttpRequests(
             requests ->
                 requests
+                    // just authentication, no authorization/authorities/roles
+                    /*
+                    .requestMatchers("/myAccount", "/myBalance", "/myLoans", "/myCards", "/user")
+                    .authenticated()
+                     */
+                    // authorization with authorities
+                    /*
+                    .requestMatchers("/myAccount").hasAuthority("VIEW_ACCOUNT")
+                    .requestMatchers("/myBalance").hasAnyAuthority("VIEW_BALANCE", "VIEW_ACCOUNT")
+                    .requestMatchers("/myLoans").hasAuthority("VIEW_LOANS")
+                    .requestMatchers("/myCards").hasAuthority("VIEW_CARDS")
+                     */
+                    // authorization with roles
                     .requestMatchers("/myAccount")
-                    .hasAuthority("VIEW_ACCOUNT")
+                    .hasRole("USER")
                     .requestMatchers("/myBalance")
-                    .hasAnyAuthority("VIEW_BALANCE", "VIEW_ACCOUNT")
+                    .hasAnyRole("USER", "ADMIN")
                     .requestMatchers("/myLoans")
-                    .hasAuthority("VIEW_LOANS")
+                    .hasRole("USER")
                     .requestMatchers("/myCards")
-                    .hasAuthority("VIEW_CARDS")
+                    .hasRole("USER")
                     .requestMatchers("/user")
                     .authenticated()
                     .requestMatchers("/contact", "/notices", "/error", "/invalidSession")
