@@ -2,6 +2,7 @@ package com.asterixcode.bankapi.infrastructure.security;
 
 import com.asterixcode.bankapi.infrastructure.exception.CustomAccessDeniedHandler;
 import com.asterixcode.bankapi.infrastructure.exception.CustomHttpBasicAuthenticationEntryPoint;
+import com.asterixcode.bankapi.infrastructure.security.filter.CsrfCookieFilter;
 import java.util.Collections;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

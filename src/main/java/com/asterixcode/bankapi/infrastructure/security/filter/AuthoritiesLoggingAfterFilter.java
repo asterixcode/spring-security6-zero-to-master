@@ -1,4 +1,4 @@
-package com.asterixcode.bankapi.infrastructure.security;
+package com.asterixcode.bankapi.infrastructure.security.filter;
 
 import jakarta.servlet.*;
 import java.io.IOException;
