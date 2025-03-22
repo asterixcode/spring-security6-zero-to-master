@@ -59,6 +59,7 @@ public class SecurityConfigurationLocal {
                     .ignoringRequestMatchers("/contact", "/register")
                     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
         .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+        // .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
         .sessionManagement(
             sessionConfig ->
                 sessionConfig.sessionCreationPolicy(
