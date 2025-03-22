@@ -84,14 +84,17 @@ public class SecurityConfigurationLocal {
                     .requestMatchers("/myAccount", "/myBalance", "/myLoans", "/myCards", "/user")
                     .authenticated()
                      */
-                    // authorization with authorities
+                    // authorization with authorities: fine-grained access control
+                    .requestMatchers("/myAccount")
+                    .hasAuthority("VIEW_ACCOUNT")
+                    .requestMatchers("/myBalance")
+                    .hasAnyAuthority("VIEW_BALANCE", "VIEW_ACCOUNT")
+                    .requestMatchers("/myLoans")
+                    .hasAuthority("VIEW_LOANS")
+                    .requestMatchers("/myCards")
+                    .hasAuthority("VIEW_CARDS")
+                    // authorization with roles = a group of authorities
                     /*
-                    .requestMatchers("/myAccount").hasAuthority("VIEW_ACCOUNT")
-                    .requestMatchers("/myBalance").hasAnyAuthority("VIEW_BALANCE", "VIEW_ACCOUNT")
-                    .requestMatchers("/myLoans").hasAuthority("VIEW_LOANS")
-                    .requestMatchers("/myCards").hasAuthority("VIEW_CARDS")
-                     */
-                    // authorization with roles
                     .requestMatchers("/myAccount")
                     .hasRole("USER")
                     .requestMatchers("/myBalance")
@@ -100,6 +103,7 @@ public class SecurityConfigurationLocal {
                     .hasRole("USER")
                     .requestMatchers("/myCards")
                     .hasRole("USER")
+                     */
                     .requestMatchers("/user")
                     .authenticated()
                     .requestMatchers("/contact", "/notices", "/error", "/invalidSession")
