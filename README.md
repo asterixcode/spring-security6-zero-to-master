@@ -39,8 +39,7 @@ https://github.com/eazybytes/spring-security
 - [x] CORS: Cross Origin Resource Sharing:
   - allowedOrigins, allowedMethods, allowedHeaders, exposedHeaders, allowCredentials, maxAge
 - [x] CSRF Protection: Cross Site Request Forgery
-- 
-
+- [x] Custom servlet Filters: Before, After, At
 
 ## Getting Started
 
