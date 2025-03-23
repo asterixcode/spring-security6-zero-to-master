@@ -2,9 +2,11 @@ package com.asterixcode.bankapi.infrastructure.security;
 
 import com.asterixcode.bankapi.infrastructure.exception.CustomAccessDeniedHandler;
 import com.asterixcode.bankapi.infrastructure.exception.CustomHttpBasicAuthenticationEntryPoint;
-import java.util.Collections;
-
 import com.asterixcode.bankapi.infrastructure.security.filter.CsrfCookieFilter;
+import com.asterixcode.bankapi.infrastructure.security.filter.JWTTokenGeneratorFilter;
+import com.asterixcode.bankapi.infrastructure.security.filter.JWTTokenValidatorFilter;
+import java.util.Collections;
+import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -39,6 +41,7 @@ public class SecurityConfiguration {
                       config.setAllowedMethods(Collections.singletonList("*"));
                       config.setAllowedHeaders(Collections.singletonList("*"));
                       config.setAllowCredentials(true);
+                      config.setExposedHeaders(List.of("Authorization"));
                       config.setMaxAge(3600L);
                       return config;
                     }))
@@ -55,9 +58,16 @@ public class SecurityConfiguration {
                     .ignoringRequestMatchers("/contact", "/register")
                     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
         .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+        /* Config for stateless app with no session management, no JSESSIONID cookie. Use with JWT */
+        .sessionManagement(
+            sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        /* Config for using JSESSIONID cookie
         .sessionManagement(
             sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
         .securityContext(contextConfig -> contextConfig.requireExplicitSave(false))
+        */
+        .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
+        .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
         .requiresChannel(rcc -> rcc.anyRequest().requiresSecure()) // Only HTTPS traffic allowed
         .authorizeHttpRequests(
             requests ->

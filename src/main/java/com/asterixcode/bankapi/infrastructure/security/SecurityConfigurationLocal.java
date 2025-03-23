@@ -3,7 +3,10 @@ package com.asterixcode.bankapi.infrastructure.security;
 import com.asterixcode.bankapi.infrastructure.exception.CustomAccessDeniedHandler;
 import com.asterixcode.bankapi.infrastructure.exception.CustomHttpBasicAuthenticationEntryPoint;
 import com.asterixcode.bankapi.infrastructure.security.filter.CsrfCookieFilter;
+import com.asterixcode.bankapi.infrastructure.security.filter.JWTTokenGeneratorFilter;
+import com.asterixcode.bankapi.infrastructure.security.filter.JWTTokenValidatorFilter;
 import java.util.Collections;
+import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -30,7 +33,7 @@ public class SecurityConfigurationLocal {
         new CsrfTokenRequestAttributeHandler();
 
     http
-        // CORS
+        /* CORS configuration */
         .cors(
             corsConfig ->
                 corsConfig.configurationSource(
@@ -40,6 +43,12 @@ public class SecurityConfigurationLocal {
                       config.setAllowedMethods(Collections.singletonList("*"));
                       config.setAllowedHeaders(Collections.singletonList("*"));
                       config.setAllowCredentials(true);
+                      /* Config headers sent from the backend to the client
+                      (e.g., Authorization header in the response headers when using JWT)
+                      When the login is completed, the server must generate and send a JWT token to the client.
+                       */
+                      config.setExposedHeaders(List.of("Authorization"));
+                      /* Set the maximum age of the preflight request in seconds */
                       config.setMaxAge(3600L);
                       return config;
                     }))
@@ -49,10 +58,12 @@ public class SecurityConfigurationLocal {
         //                smc.invalidSessionUrl("/invalidSession")
         //                    .maximumSessions(3)
         //                    .maxSessionsPreventsLogin(true))
-        // commented out in favor of configuring the csrf() method as not /invalidSession page is
-        // configured.
-        // End CORS
-        // Start CSRF config
+        /*
+        commented out in favor of configuring the csrf() method as not /invalidSession page is
+        configured.
+         */
+        /* End CORS configuration */
+        /* Start CSRF config */
         .csrf(
             csrfConfig ->
                 csrfConfig
@@ -60,35 +71,53 @@ public class SecurityConfigurationLocal {
                     .ignoringRequestMatchers("/contact", "/register")
                     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
         .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
-        // .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
-        // .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
-        // .addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
         .sessionManagement(
             sessionConfig ->
                 sessionConfig.sessionCreationPolicy(
-                    SessionCreationPolicy
-                        .ALWAYS // Tells Spring Security to create a session if one doesn't exist.
-                    // The JSESSIONID is created but not saved in the SecurityContextHolder, so it
-                    // requires manual handling.
-                    // This is done by invoking the .securityContext()
+                    SessionCreationPolicy.STATELESS
+                    /* STATELESS = Tells Spring Security to never create a session and to never
+                     store it in the SecurityContextHolder. This is useful for REST APIs with JWT.
+                     The JSESSIONID is not created. The JWT is never stored in the backend but
+                    sent to the client.
+                    */
+                    // .ALWAYS
+                    /*  Tells Spring Security to create a session JSESSIONID if one doesn't exist.
+                    The JSESSIONID is created but not saved in the SecurityContextHolder, so it
+                    requires manual handling.
+                    This is done by invoking the .securityContext()
+                    */
                     ))
-        .securityContext(
-            contextConfig ->
-                contextConfig.requireExplicitSave(
-                    false)) // This tells the Spring Security that the app is not storing any
-        // JSESSIONID or the logged in user in the SecurityContextHolder.
-        // Instead, it tells Spring Security to create a session if one doesn't exist.
-        // End CSRF config
+        // .securityContext(
+        //    contextConfig ->
+        //        contextConfig.requireExplicitSave(
+        //            false))
+        /* .securityContext(...): This tells the Spring Security that the app is not storing any
+        JSESSIONID or the logged in user in the SecurityContextHolder.
+        Instead, it tells Spring Security to create a session if one doesn't exist.
+        .securityContext is useful for apps that require a session but don't need to store the user in the SecurityContextHolder.
+        .requireExplicitSave(false) tells Spring Security to automatically save the SecurityContext
+        .requireExplicitSave() is not used with .sessionCreationPolicy(SessionCreationPolicy.STATELESS) as it's not needed for REST APIs with JWT.
+        */
+        /* End CSRF config */
+        /* Filters for demonstration purposes: */
+        // .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
+        // .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
+        // .addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
+        /* Generate JWT token after basic authentication, only on login endpoint (shouldNotFilter method) */
+        .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
+        /* Validate JWT token before any request, except login endpoint (shouldNotFilter method) */
+        .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
         .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure()) // Only HTTP traffic allowed
         .authorizeHttpRequests(
             requests ->
                 requests
-                    // just authentication, no authorization/authorities/roles
+                    /* just authentication, no authorization/authorities/roles */
                     /*
                     .requestMatchers("/myAccount", "/myBalance", "/myLoans", "/myCards", "/user")
                     .authenticated()
-                     */
-                    // authorization with authorities: fine-grained access control
+                    */
+
+                    /* authorization with authorities: fine-grained access control */
                     .requestMatchers("/myAccount")
                     .hasAuthority("VIEW_ACCOUNT")
                     .requestMatchers("/myBalance")
@@ -97,7 +126,7 @@ public class SecurityConfigurationLocal {
                     .hasAuthority("VIEW_LOANS")
                     .requestMatchers("/myCards")
                     .hasAuthority("VIEW_CARDS")
-                    // authorization with roles = a group of authorities
+                    /* authorization with roles = a group of authorities */
                     /*
                     .requestMatchers("/myAccount")
                     .hasRole("USER")
@@ -133,10 +162,13 @@ public class SecurityConfigurationLocal {
     return http.build();
   }
 
-  //  @Bean
-  //  UserDetailsService userDetailsService(DataSource dataSource) {
-  //    return new JdbcUserDetailsManager(dataSource);
-  //  }
+  /* Method to use the default JDBC user details manager */
+  /*
+  @Bean
+  UserDetailsService userDetailsService(DataSource dataSource) {
+    return new JdbcUserDetailsManager(dataSource);
+  }
+  */
 
   @Bean
   public PasswordEncoder passwordEncoder() {
