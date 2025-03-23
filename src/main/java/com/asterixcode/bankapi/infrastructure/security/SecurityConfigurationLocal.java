@@ -62,6 +62,7 @@ public class SecurityConfigurationLocal {
         .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
         // .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
         // .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
+        // .addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
         .sessionManagement(
             sessionConfig ->
                 sessionConfig.sessionCreationPolicy(
