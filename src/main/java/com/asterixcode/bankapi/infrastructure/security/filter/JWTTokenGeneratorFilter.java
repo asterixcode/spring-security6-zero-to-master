@@ -49,7 +49,12 @@ public class JWTTokenGeneratorFilter extends OncePerRequestFilter {
       // Generate the JWT token
       String jwtToken =
           Jwts.builder()
-              .issuer("The Bank")
+              /* 1- Set the header */
+              .header()
+              .type("JWT")
+              .and()
+              /* 2- Set the payload */
+              .issuer("The Bank API")
               .subject("JWT Token")
               // Add the username to the token
               .claim("username", authentication.getName())
@@ -60,9 +65,12 @@ public class JWTTokenGeneratorFilter extends OncePerRequestFilter {
                       .map(GrantedAuthority::getAuthority)
                       .collect(Collectors.joining(",")))
               .issuedAt(new Date())
+              .notBefore(new Date())
               .expiration(new Date(new Date().getTime() + 30000000)) // 8 hours
+              /* 3- Sign the token with the secret key */
               .signWith(secretKey)
-              .compact(); // Compact the token = return the token as a string
+              // Compact the token = return the token as a string
+              .compact();
 
       // Add the JWT token to the response header "Authorization"
       response.addHeader(HttpHeaders.AUTHORIZATION, jwtToken);
