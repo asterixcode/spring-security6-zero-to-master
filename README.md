@@ -26,20 +26,28 @@ https://github.com/eazybytes/spring-security
 - [x] Custom AccessDeniedHandler for 403 Forbidden
 - [x] Custom AuthenticationSuccessEvent and AbstractAuthenticationFailureEvent handlers
 - [x] Session Management:
-  - Invalid Session URL redirect: `.invalidSessionUrl("/invalid-session")`
-  - Concurrent Session Control: `.maximumSessions(3)`
-  - Session Fixation Protection `.maxSessionsPreventsLogin(true)`
+    - Invalid Session URL redirect: `.invalidSessionUrl("/invalid-session")`
+    - Concurrent Session Control: `.maximumSessions(3)`
+    - Session Fixation Protection `.maxSessionsPreventsLogin(true)`
 - [x] Login
 - [x] Logout: redirect, invalidate session, clear cookies
 - [x] SecurityContextHolder, SecurityContext, Authentication
 - [x] HTTPS allowed traffic only
-  - `.requiresChannel(rcc -> rcc.anyRequest().requiresSecure())`
+    - `.requiresChannel(rcc -> rcc.anyRequest().requiresSecure())`
 - [x] HTTP allowed traffic only
-  - `.requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())`
+    - `.requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())`
 - [x] CORS: Cross Origin Resource Sharing:
-  - allowedOrigins, allowedMethods, allowedHeaders, exposedHeaders, allowCredentials, maxAge
+    - allowedOrigins, allowedMethods, allowedHeaders, exposedHeaders, allowCredentials, maxAge
 - [x] CSRF Protection: Cross Site Request Forgery
 - [x] Custom servlet Filters: Before, After, At
+- [x] JWT Token Generation filter
+- [x] JWT Token Validation filter
+- [x] Custom login endpoint with username and password in request body instead of form data, and JWT token as response
+- [x] Springdoc OpenAPI 3.0 integration
+    - Swagger UI: `http://localhost:8080/swagger-ui/`
+    - Global Header for all endpoints
+    - Security Schemes: Basic Auth, Bearer JWT, API Key, OAuth2
+    - Grouped API Endpoints
 
 ## Getting Started
 
