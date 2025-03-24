@@ -85,7 +85,8 @@ public class SecurityConfiguration {
                     .hasAuthority("VIEW_CARDS")
                     .requestMatchers("/user")
                     .authenticated()
-                    .requestMatchers("/contact", "/notices", "/error", "/invalidSession", "/apiLogin")
+                    .requestMatchers(
+                        "/contact", "/notices", "/error", "/invalidSession", "/apiLogin")
                     .permitAll()
                     .requestMatchers("/api/v1/customers/register")
                     .permitAll()
@@ -120,7 +121,7 @@ public class SecurityConfiguration {
 
   @Bean
   AuthenticationManager authenticationManager(
-      UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) throws Exception {
+      UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
     BankUsernamePasswordAuthenticationProvider authenticationProvider =
         new BankUsernamePasswordAuthenticationProvider(userDetailsService, passwordEncoder);
     ProviderManager providerManager = new ProviderManager(authenticationProvider);

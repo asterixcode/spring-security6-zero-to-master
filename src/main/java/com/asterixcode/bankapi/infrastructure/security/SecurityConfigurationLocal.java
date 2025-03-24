@@ -187,7 +187,7 @@ public class SecurityConfigurationLocal {
 
   @Bean
   AuthenticationManager authenticationManager(
-      UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) throws Exception {
+      UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
     BankUsernamePasswordAuthenticationProvider authenticationProvider =
         new BankUsernamePasswordAuthenticationProvider(userDetailsService, passwordEncoder);
     /* ProviderManager is a concrete implementation of AuthenticationManager */
