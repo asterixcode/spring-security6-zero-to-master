@@ -71,6 +71,10 @@ public class OpenApiConfig {
         .info(apiInfo())
         .components(
             new Components()
+                // add basic auth
+                .addSecuritySchemes(
+                    "basic-auth",
+                    new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("basic"))
                 .addSecuritySchemes(
                     "bearer-jwt",
                     new SecurityScheme()
@@ -101,6 +105,7 @@ public class OpenApiConfig {
                                         .scopes(new Scopes())))))
         .security(
             Arrays.asList(
+                new SecurityRequirement().addList("basic-auth"),
                 new SecurityRequirement().addList("bearer-jwt"),
                 new SecurityRequirement().addList("api_key"),
                 new SecurityRequirement().addList("spring_oauth")));
