@@ -99,7 +99,6 @@ public class OpenApiConfig {
                                         .refreshUrl("/token")
                                         .tokenUrl("/token")
                                         .scopes(new Scopes())))))
-        // or add security item as list
         .security(
             Arrays.asList(
                 new SecurityRequirement().addList("bearer-jwt"),
@@ -107,11 +106,12 @@ public class OpenApiConfig {
                 new SecurityRequirement().addList("spring_oauth")));
   }
 
-//  @Bean
-//  public GroupedOpenApi customerApi() {
-//    return GroupedOpenApi.builder()
-//        .group("Customers")
-//        .pathsToMatch("/api/v1/customers/**", "/user")
-//        .build();
-//  }
+
+  @Bean
+  public GroupedOpenApi customerApi() {
+    return GroupedOpenApi.builder()
+        .group("Customers")
+        .pathsToMatch("/api/v1/customers/**", "/user")
+        .build();
+  }
 }
