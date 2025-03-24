@@ -10,10 +10,13 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -68,7 +71,8 @@ public class SecurityConfigurationLocal {
             csrfConfig ->
                 csrfConfig
                     .csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
-                    .ignoringRequestMatchers("/contact", "/register")
+                    /* Ignoring CSRF for specific endpoints, usually POST requests */
+                    .ignoringRequestMatchers("/contact", "/register", "/apiLogin")
                     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
         .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
         .sessionManagement(
@@ -139,7 +143,8 @@ public class SecurityConfigurationLocal {
                      */
                     .requestMatchers("/user")
                     .authenticated()
-                    .requestMatchers("/contact", "/notices", "/error", "/invalidSession")
+                    .requestMatchers(
+                        "/contact", "/notices", "/error", "/invalidSession", "/apiLogin")
                     .permitAll()
                     .requestMatchers("/api/v1/customers/register")
                     .permitAll()
@@ -178,5 +183,20 @@ public class SecurityConfigurationLocal {
   @Bean
   public CompromisedPasswordChecker compromisedPasswordChecker() {
     return new HaveIBeenPwnedRestApiPasswordChecker();
+  }
+
+  @Bean
+  AuthenticationManager authenticationManager(
+      UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) throws Exception {
+    BankUsernamePasswordAuthenticationProvider authenticationProvider =
+        new BankUsernamePasswordAuthenticationProvider(userDetailsService, passwordEncoder);
+    /* ProviderManager is a concrete implementation of AuthenticationManager */
+    ProviderManager providerManager = new ProviderManager(authenticationProvider);
+    /* Set the ProviderManager to not erase credentials after authentication, so that the credentials can be used later.
+     * This is useful for using the credentials for any other validation etc inside the application after authentication.
+     * providerManager.setEraseCredentialsAfterAuthentication(false);
+     * */
+    providerManager.setEraseCredentialsAfterAuthentication(false);
+    return providerManager;
   }
 }

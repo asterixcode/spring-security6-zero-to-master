@@ -10,10 +10,13 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -55,7 +58,7 @@ public class SecurityConfiguration {
             csrfConfig ->
                 csrfConfig
                     .csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
-                    .ignoringRequestMatchers("/contact", "/register")
+                    .ignoringRequestMatchers("/contact", "/register", "/apiLogin")
                     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
         .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
         /* Config for stateless app with no session management, no JSESSIONID cookie. Use with JWT */
@@ -82,7 +85,7 @@ public class SecurityConfiguration {
                     .hasAuthority("VIEW_CARDS")
                     .requestMatchers("/user")
                     .authenticated()
-                    .requestMatchers("/contact", "/notices", "/error", "/invalidSession")
+                    .requestMatchers("/contact", "/notices", "/error", "/invalidSession", "/apiLogin")
                     .permitAll()
                     .requestMatchers("/api/v1/customers/register")
                     .permitAll()
@@ -113,5 +116,15 @@ public class SecurityConfiguration {
   @Bean
   public CompromisedPasswordChecker compromisedPasswordChecker() {
     return new HaveIBeenPwnedRestApiPasswordChecker();
+  }
+
+  @Bean
+  AuthenticationManager authenticationManager(
+      UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) throws Exception {
+    BankUsernamePasswordAuthenticationProvider authenticationProvider =
+        new BankUsernamePasswordAuthenticationProvider(userDetailsService, passwordEncoder);
+    ProviderManager providerManager = new ProviderManager(authenticationProvider);
+    providerManager.setEraseCredentialsAfterAuthentication(false);
+    return providerManager;
   }
 }
