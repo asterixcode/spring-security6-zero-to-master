@@ -106,7 +106,6 @@ public class OpenApiConfig {
                 new SecurityRequirement().addList("spring_oauth")));
   }
 
-
   @Bean
   public GroupedOpenApi customerApi() {
     return GroupedOpenApi.builder()
