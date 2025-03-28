@@ -48,6 +48,10 @@ https://github.com/eazybytes/spring-security
     - Global Header for all endpoints
     - Security Schemes: Basic Auth, Bearer JWT, API Key, OAuth2
     - Grouped API Endpoints
+- [x] Method Level Security
+    - `@EnableWebSecurity`
+    - `@PreAuthorize()`, `@PostAuthorize()`, `@Secured()`, `@RolesAllowed()`, `@PreFilter()`, `@PostFilter()`
+-
 
 ## Getting Started
 
