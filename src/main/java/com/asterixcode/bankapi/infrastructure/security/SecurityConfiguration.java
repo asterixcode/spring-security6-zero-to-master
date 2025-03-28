@@ -80,7 +80,7 @@ public class SecurityConfiguration {
                     .requestMatchers("/myBalance")
                     .hasAnyAuthority("VIEW_BALANCE", "VIEW_ACCOUNT")
                     .requestMatchers("/myLoans")
-                    .hasAuthority("VIEW_LOANS")
+                    .authenticated()
                     .requestMatchers("/myCards")
                     .hasAuthority("VIEW_CARDS")
                     .requestMatchers("/user")

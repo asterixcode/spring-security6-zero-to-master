@@ -7,5 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LoanRepository extends ListCrudRepository<Loan, Long> {
+
+  // @PreAuthorize("hasRole('USER')")
   List<Loan> findByCustomerIdOrderByStartDateDesc(long customerId);
 }

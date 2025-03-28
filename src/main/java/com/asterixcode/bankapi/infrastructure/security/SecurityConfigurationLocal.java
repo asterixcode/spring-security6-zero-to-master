@@ -126,8 +126,7 @@ public class SecurityConfigurationLocal {
                     .hasAuthority("VIEW_ACCOUNT")
                     .requestMatchers("/myBalance")
                     .hasAnyAuthority("VIEW_BALANCE", "VIEW_ACCOUNT")
-                    .requestMatchers("/myLoans")
-                    .hasAuthority("VIEW_LOANS")
+                    .requestMatchers("/myLoans").authenticated()
                     .requestMatchers("/myCards")
                     .hasAuthority("VIEW_CARDS")
                     /* authorization with roles = a group of authorities */
