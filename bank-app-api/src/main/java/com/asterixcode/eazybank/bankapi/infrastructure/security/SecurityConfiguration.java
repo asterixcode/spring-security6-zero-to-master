@@ -26,6 +26,8 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 
+import static com.asterixcode.eazybank.bankapi.infrastructure.constants.ApplicationConstants.SWAGGER_WHITELIST;
+
 @Profile("!local")
 @Configuration
 public class SecurityConfiguration {
@@ -90,7 +92,7 @@ public class SecurityConfiguration {
                     .permitAll()
                     .requestMatchers("/api/v1/customers/register")
                     .permitAll()
-                    .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**")
+                    .requestMatchers(SWAGGER_WHITELIST)
                     .permitAll());
     http.formLogin(Customizer.withDefaults());
     http.httpBasic(
