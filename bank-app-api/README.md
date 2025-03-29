@@ -16,3 +16,10 @@ SPRING_PROFILES_ACTIVE=local;JWT_SECRET=jOAEoaepakraH21j2131kasJJJajeaie
 ```env
 SPRING_PROFILES_ACTIVE=prod;JWT_SECRET=ArewawepakraH21j2131kasJJJajeaie
 ```
+
+## Getting Started
+
+The following user is available for testing:
+
+- email: admin@mail.com
+- password: pass@user@4321
