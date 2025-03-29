@@ -1,8 +1,10 @@
 package com.asterixcode.eazybank.bankapi.infrastructure.springdoc;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.parameters.HeaderParameter;
 import io.swagger.v3.oas.models.security.*;
@@ -13,15 +15,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@OpenAPIDefinition
 public class OpenApiConfig {
 
-  private static final String TITLE = "Bank API";
-  private static final String DESCRIPTION = "REST API for Bank operations";
-  private static final String VERSION = "0.0.1";
-
   @Bean
-  Info apiInfo() {
-    return new Info().title(TITLE).description(DESCRIPTION).version(VERSION);
+  public GroupedOpenApi customerApi() {
+    return GroupedOpenApi.builder()
+        .group("Customers")
+        .pathsToMatch("/api/v1/customers/**", "/user")
+        .build();
   }
 
   /* Add Global Header to all endpoints for OpenApi beans */
@@ -66,56 +68,55 @@ public class OpenApiConfig {
   }
 
   @Bean
-  public OpenAPI customOpenAPI() {
+  public OpenAPI customOpenAPI(SwaggerProperties swaggerProperties) {
     return new OpenAPI()
-        .info(apiInfo())
-        .components(
-            new Components()
-                // add basic auth
-                .addSecuritySchemes(
-                    "basic-auth",
-                    new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("basic"))
-                .addSecuritySchemes(
-                    "bearer-jwt",
-                    new SecurityScheme()
-                        .type(SecurityScheme.Type.HTTP)
-                        .description("Bearer JWT Token")
-                        .in(SecurityScheme.In.HEADER)
-                        .scheme("bearer")
-                        .bearerFormat("JWT"))
-                .addSecuritySchemes(
-                    "api_key",
-                    new SecurityScheme()
-                        .type(SecurityScheme.Type.APIKEY)
-                        .description("Api Key access")
-                        .in(SecurityScheme.In.HEADER)
-                        .name("API-KEY"))
-                .addSecuritySchemes(
-                    "spring_oauth",
-                    new SecurityScheme()
-                        .type(SecurityScheme.Type.OAUTH2)
-                        .description("Oauth2 flow")
-                        .flows(
-                            new OAuthFlows()
-                                .authorizationCode(
-                                    new OAuthFlow()
-                                        .authorizationUrl("/auth")
-                                        .refreshUrl("/token")
-                                        .tokenUrl("/token")
-                                        .scopes(new Scopes())))))
+        .info(apiInfo(swaggerProperties))
+        .components(createComponents())
         .security(
             Arrays.asList(
                 new SecurityRequirement().addList("basic-auth"),
                 new SecurityRequirement().addList("bearer-jwt"),
-                new SecurityRequirement().addList("api_key"),
-                new SecurityRequirement().addList("spring_oauth")));
+                new SecurityRequirement().addList("api_key")));
   }
 
   @Bean
-  public GroupedOpenApi customerApi() {
-    return GroupedOpenApi.builder()
-        .group("Customers")
-        .pathsToMatch("/api/v1/customers/**", "/user")
-        .build();
+  Info apiInfo(SwaggerProperties swaggerProperties) {
+    return new Info()
+        .title(swaggerProperties.projectTitle())
+        .description(swaggerProperties.projectDescription())
+        .version(swaggerProperties.projectVersion())
+        .license(getLicense());
+  }
+
+  private License getLicense() {
+    return new License().name("Unlicense").url("https://unlicense.org/");
+  }
+
+  private Components createComponents() {
+    return new Components()
+        .addSecuritySchemes("basic-auth", createBasicAuthScheme())
+        .addSecuritySchemes("bearer-jwt", createBearerJwtScheme())
+        .addSecuritySchemes("api_key", createApiKeyScheme());
+  }
+
+  private SecurityScheme createBasicAuthScheme() {
+    return new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("basic");
+  }
+
+  private SecurityScheme createBearerJwtScheme() {
+    return new SecurityScheme()
+        .type(SecurityScheme.Type.HTTP)
+        .description("Bearer JWT Token")
+        .in(SecurityScheme.In.HEADER)
+        .scheme("bearer")
+        .bearerFormat("JWT");
+  }
+
+  private SecurityScheme createApiKeyScheme() {
+    return new SecurityScheme()
+        .type(SecurityScheme.Type.APIKEY)
+        .description("Api Key access")
+        .in(SecurityScheme.In.HEADER)
+        .name("API-KEY");
   }
 }

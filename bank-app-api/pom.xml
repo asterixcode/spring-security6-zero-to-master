@@ -10,9 +10,9 @@
     </parent>
     <groupId>com.asterixcode.eazybank</groupId>
     <artifactId>bank-app-api</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>bank-api</name>
-    <description>bank-api</description>
+    <description>API for Bank operations</description>
     <url/>
     <licenses>
         <license/>
