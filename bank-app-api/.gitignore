@@ -31,9 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-### Database ###
-/bank-app-db/data/
-
-### Frontend ###
-/bank-app-frontend

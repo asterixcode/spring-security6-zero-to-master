@@ -9,5 +9,5 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - ./db:/docker-entrypoint-initdb.d/
-      - ./db/data:/var/lib/postgresql/data
+      - ./bank-app-db:/docker-entrypoint-initdb.d/
+      - ./bank-app-db/data:/var/lib/postgresql/data
