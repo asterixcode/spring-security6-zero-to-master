@@ -1,0 +1,45 @@
+{
+  "realm": "bank_prod",
+  "enabled": true,
+  "users": [
+    {
+      "username": "admin",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Admin",
+      "lastName": "User",
+      "email": "admin@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "admin"
+      ],
+      "clientRoles": {
+        "realm-management": [
+          "manage-users"
+        ]
+      }
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "example-client-prod",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "example-secret-prod",
+      "redirectUris": [
+        "https://your-production-url/*"
+      ],
+      "webOrigins": [
+        "*"
+      ],
+      "publicClient": false,
+      "protocol": "openid-connect"
+    }
+  ]
+}

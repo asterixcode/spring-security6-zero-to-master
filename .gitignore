@@ -33,7 +33,8 @@ build/
 .vscode/
 
 ### Database ###
-/bank-app-db/data/
+/bank-app-api/postgres_data
+/keycloak/postgres_data
 
 ### Frontend ###
 /bank-app-frontend

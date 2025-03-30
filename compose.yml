@@ -1,13 +1,92 @@
 services:
-  postgres:
-    image: postgres:17-alpine
-    container_name: bank-db
+  bank_api:
+    build:
+      context: ./bank-app-api
+      dockerfile: Dockerfile
+    container_name: bank_api
+    command:
+      - /bin/bash
+      - -c
+      - |
+        mvn clean install -DskipTests
+        mvn -B -e -C -pl bank-api -Dmaven.test.skip=true -Dspring-boot.run.profiles=local,docker -Dspring.devtools.restart.enabled=true -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005" spring-boot:run
+    ports:
+      - '8080:8080'
+      - "8081:5005"
     environment:
-      - 'POSTGRES_DB=bank-db'
-      - 'POSTGRES_PASSWORD=postgres'
-      - 'POSTGRES_USER=postgres'
+      SPRING_PROFILES_ACTIVE: local
+    depends_on:
+      - bank_api_postgres
+    networks:
+      - bank_api_network
+
+  bank_api_postgres:
+    image: postgres:17-alpine
+    container_name: bank_api_postgres
+    environment:
+      POSTGRES_DB: bank_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
       - '5432:5432'
     volumes:
-      - ./bank-app-db:/docker-entrypoint-initdb.d/
-      - ./bank-app-db/data:/var/lib/postgresql/data
+      - ./bank-app-api/db/:/docker-entrypoint-initdb.d/
+      - ./bank-app-api/postgres_data:/var/lib/postgresql/data
+    networks:
+      - bank_api_network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0.1
+    restart: always
+    container_name: keycloak
+    depends_on:
+      - keycloak_postgres
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 7080
+      KC_HOSTNAME_STRICT_BACKCHANNEL: "true"
+      KC_HEALTH_ENABLED: "true"
+      KC_THEME: custom
+      KC_THEME_LOGIN: custom
+      KC_LOG_LEVEL: info
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak_postgres:5432/keycloak_db
+      KC_DB_USERNAME: keycloak_db_user
+      KC_DB_PASSWORD: keycloak_db_password
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:7080/health/ready" ]
+      interval: 15s
+      timeout: 2s
+      retries: 15
+    command: [ "start-dev", "--http-port", "7080", "--https-port", "7443", "--import-realm" ]
+    ports:
+      - "7080:7080"
+    volumes:
+      - ./keycloak/realms/realm-export-local.json:/opt/keycloak/data/import/realm-export-local.json
+      - ./keycloak/realms/realm-export-prod.json:/opt/keycloak/data/import/realm-export-prod.json
+      - ./keycloak/scripts/disable-theme-cache.cli:/opt/keycloak/data/import/disable-theme-cache.cli
+      - ./keycloak/themes:/opt/keycloak/themes
+    networks:
+      - keycloak_network
+
+  keycloak_postgres:
+    image: postgres:17-alpine
+    container_name: keycloak_postgres
+    environment:
+      POSTGRES_DB: keycloak_db
+      POSTGRES_USER: keycloak_db_user
+      POSTGRES_PASSWORD: keycloak_db_password
+    ports:
+      - '5433:5432'
+    volumes:
+      - ./keycloak/postgres_data:/var/lib/postgresql/data
+    networks:
+      - keycloak_network
+
+networks:
+  bank_api_network:
+    driver: bridge
+  keycloak_network:
+    driver: bridge
