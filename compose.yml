@@ -51,6 +51,7 @@ services:
       KC_DB_URL: jdbc:postgresql://keycloak_postgres:5432/keycloak_db
       KC_DB_USERNAME: keycloak_db_user
       KC_DB_PASSWORD: keycloak_db_password
+      KC_DEFAULT_REALM: bank_local
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:7080/health/ready" ]
       interval: 15s
@@ -77,6 +78,7 @@ services:
     ports:
       - '5433:5432'
     volumes:
+      - ./keycloak/db/:/docker-entrypoint-initdb.d/
       - ./keycloak/postgres_data:/var/lib/postgresql/data
     networks:
       - keycloak_network
